@@ -161,6 +161,10 @@ public:
 template <class ValType>
 TMatrix<ValType>::TMatrix(int s): TVector<TVector<ValType> >(s)
 {
+	for (int i = 0; i < s; i++){
+		TVector<VolType> temp(size - i, i);
+		pVector[i] = temp;
+	}
 } /*-------------------------------------------------------------------------*/
 
 template <class ValType> // конструктор копирования
@@ -184,7 +188,18 @@ bool TMatrix<ValType>::operator!=(const TMatrix<ValType> &mt) const
 template <class ValType> // присваивание
 TMatrix<ValType>& TMatrix<ValType>::operator=(const TMatrix<ValType> &mt)
 {
-} /*-------------------------------------------------------------------------*/
+	StartIndex = m.StartIndex;
+	if (size != m.size){
+		delete[]pVector;
+		size = m.size;
+		pVector = new<TVector<ValType>>(size);
+	}
+	for (int i = 0; i < size; i++){
+		pVector[i] = m.pVector[i];
+	}
+	return *this;
+	}
+ /*-------------------------------------------------------------------------*/
 
 template <class ValType> // сложение
 TMatrix<ValType> TMatrix<ValType>::operator+(const TMatrix<ValType> &mt)
