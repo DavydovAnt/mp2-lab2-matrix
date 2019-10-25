@@ -64,19 +64,18 @@ TVector<ValType>::TVector(int s, int si)
 {
 	StartIndex = si;
 	Size = s;
-	pVector = new ValType[size];
-	for (int i = 0; i < size; i++) {
-		pVector[i] = 0;
-	}
+	pVector = new ValType[Size];
+	
 } /*-------------------------------------------------------------------------*/
 
 template <class ValType> //конструктор копирования
 TVector<ValType>::TVector(const TVector<ValType> &v)
 {
-	Size = a.Size;
+	Size = v.Size;
 	pVector = new ValType[Size];
-	for (int i = 0; i < size; i++) {
-		pVector[i] = a.pVector[i];
+	StartIndex = v.StartIndex;
+	for (int i = 0; i < Size; i++) {
+		pVector[i] = v.pVector[i];
 	}
 } /*-------------------------------------------------------------------------*/
 
@@ -89,7 +88,7 @@ TVector<ValType>::~TVector()
 template <class ValType> // доступ
 ValType& TVector<ValType>::operator[](int pos)
 {
-	return pVector[pos];
+	return pVector[pos-StartIndex];
 } /*-------------------------------------------------------------------------*/
 
 template <class ValType> // сравнение
@@ -137,6 +136,7 @@ TVector<ValType>& TVector<ValType>::operator=(const TVector &v)
 	for (int i = 0; i < Size; i++) {
 		pVector[i] = v.pVector[i];
 	}
+	StartIndex = v.StartIndex;
 	return *this;
 } /*-------------------------------------------------------------------------*/
 
@@ -192,7 +192,7 @@ ValType TVector<ValType>::operator*(const TVector<ValType> &v)
 {
 	ValType sum = 0;
 	for (int i = 0; i < Size; i++) {
-		sum += pVector[i] * v.pVector[i];
+		sum += (pVector[i] * v.pVector[i]);
 	}
 	return sum;
 } /*-------------------------------------------------------------------------*/
@@ -234,6 +234,7 @@ TMatrix<ValType>::TMatrix(int s): TVector<TVector<ValType> >(s)
 		TVector<ValType> temp(Size - i, i);
 		pVector[i] = temp;
 	}
+	StartIndex = 0;
 } /*-------------------------------------------------------------------------*/
 
 template <class ValType> // конструктор копирования
@@ -263,7 +264,7 @@ TMatrix<ValType>& TMatrix<ValType>::operator=(const TMatrix<ValType> &mt)
 	if (Size != mt.Size){
 		delete[]pVector;
 		Size = mt.Size;
-		pVector = new ValType [Size];
+		pVector = new TVector<ValType> [Size];
 	}
 	for (int i = 0; i < Size; i++){
 		pVector[i] = mt.pVector[i];
